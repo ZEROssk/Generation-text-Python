@@ -18,42 +18,38 @@ def load_file(filepath):
 
     return text_data
 
+def markov_generate_text(txt):
+    markov = {}
+    count = 0
+    w1 = ""
+    w2 = ""
+    generate_text = ""
+
+    for word in txt:
+        if w1 and w2:
+            if (w1, w2) not in markov:
+                markov[(w1, w2)] = []
+            markov[(w1, w2)].append(word)
+        w1, w2 = w2, word
+
+    w1, w2  = random.choice(list(markov.keys()))
+
+    while count < len(txt):
+        tmp = random.choice(markov[(w1, w2)])
+        generate_text += tmp
+        w1, w2 = w2, tmp
+        count += 1
+
+    return generate_text
+
 def main():
     base_text = load_file('./*.txt')
 
     base_text = text_wakati(base_text)
 
-    print(base_text)
+    sentence = markov_generate_text(base_text)
 
-#def main():
-#    filepath_list = glob.glob('./*.txt')
-#
-#    for filename in filepath_list:
-#        with open(filename, "r") as input:
-#            test = input.read()
-#
-#        wordlist = text_wakati(test)
-#    #wordlist = text_wakati(test)
-#    markov = {}
-#    w1 = ""
-#    w2 = ""
-#
-#    for word in wordlist:
-#        if w1 and w2:
-#            if (w1, w2) not in markov:
-#                markov[(w1, w2)] = []
-#            markov[(w1, w2)].append(word)
-#        w1, w2 = w2, word
-#    count = 0
-#    sentence = ""
-#    w1, w2  = random.choice(list(markov.keys()))
-#
-#    while count < len(wordlist):
-#        tmp = random.choice(markov[(w1, w2)])
-#        sentence += tmp
-#        w1, w2 = w2, tmp
-#        count += 1
-#    print(sentence)
+    print(sentence)
 
 if __name__ == "__main__":
     main()
