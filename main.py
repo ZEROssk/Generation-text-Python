@@ -4,9 +4,9 @@ import MeCab
 from glob import iglob
 
 def text_wakati(text):
-    t = MeCab.Tagger("-Owakati")
+    t = MeCab.Tagger('-Owakati')
     m = t.parse(text)
-    result = m.rstrip(" \n").split(" ")
+    result = m.rstrip(' \n').split(' ')
 
     return result
 
@@ -34,7 +34,7 @@ def markov_generate_text(txt):
 
     w1, w2  = random.choice(list(markov.keys()))
 
-    while count < len(txt):
+    while count < 10:#len(txt):
         tmp = random.choice(markov[(w1, w2)])
         generate_text += tmp
         w1, w2 = w2, tmp
