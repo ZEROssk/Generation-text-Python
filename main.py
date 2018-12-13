@@ -43,7 +43,7 @@ def markov_generate_text(txt):
     return generate_text
 
 def main():
-    base_text = load_file('./*.txt')
+    base_text = load_file('./text_data/アスカ.txt')
 
     base_text = text_wakati(base_text)
 
