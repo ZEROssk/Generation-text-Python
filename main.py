@@ -34,10 +34,11 @@ def markov_generate_text(txt):
 
     w1, w2  = random.choice(list(markov.keys()))
 
-    while count < 10:#len(txt):
+    while count < 15:#len(txt):
         tmp = random.choice(markov[(w1, w2)])
         generate_text += tmp
         w1, w2 = w2, tmp
+        print(tmp,w1,w2)
         count += 1
 
     return generate_text
@@ -48,8 +49,11 @@ def main():
     base_text = text_wakati(base_text)
 
     sentence = markov_generate_text(base_text)
-
     print(sentence)
+
+   # for i in range(1): 
+   #     sentence = markov_generate_text(base_text)
+   #     print(sentence)
 
 if __name__ == "__main__":
     main()
