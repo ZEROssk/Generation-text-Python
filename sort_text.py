@@ -20,7 +20,9 @@ for line in text:
     if os.path.exists(file_path):
         write = open(file_path, "a")
         write.write(text_line)
+        print("write: ", text_line)
     else:
         new_file = open(file_path, "w")
         new_file.write(text_line)
+        print("write: ", text_line)
 
