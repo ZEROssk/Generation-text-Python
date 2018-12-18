@@ -16,7 +16,7 @@ for line in text:
     file_path = './text_data/ALL.txt'#'./text_data/' + name + '.txt'
 
     text_line_base = line[line.find("「") + 1:line.find("」")] + '\n'
-    text_line = text_line_base + 'EOF'
+    text_line = text_line_base
 
     if os.path.exists(file_path):
         write = open(file_path, "a")

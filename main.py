@@ -25,6 +25,7 @@ def markov_generate_text(txt):
     w2 = ""
     generate_text = ""
 
+#辞書作成
     for word in txt:
         if w1 and w2:
             if (w1, w2) not in markov:
@@ -34,26 +35,57 @@ def markov_generate_text(txt):
 
     w1, w2  = random.choice(list(markov.keys()))
 
-    while count < 15:#len(txt):
+#文章の生成
+    while count < len(txt):
         tmp = random.choice(markov[(w1, w2)])
+        #if count == 0:
+        #    if '！' in tmp:
+        #        print("test！")
+        #        continue
+        #    elif '？' in tmp:
+        #        print("test？")
+        #        continue
+        #    elif '!' in tmp:
+        #        print("test!")
+        #        continue
+        #    elif '?' in tmp:
+        #        print("test?")
+        #        continue
+        #    elif '。' in tmp:
+        #        print("test。")
+        #        continue
+        #    elif '、' in tmp:
+        #        print("test、")
+        #        continue
         generate_text += tmp
         w1, w2 = w2, tmp
-        print(w1, w2, '=', w2, tmp)
+        #print(w1, w2, '=', w2, tmp)
         count += 1
+        if '！' in tmp:
+            break
+        elif '？' in tmp:
+            break
+        elif '!' in tmp:
+            break
+        elif '?' in tmp:
+            break
+        elif '。' in tmp:
+            break
 
     return generate_text
 
 def main():
-    base_text = load_file('./text_data/ALL.txt')
+    base_text = load_file('./text_data/asuka.txt')
 
     base_text = text_wakati(base_text)
 
-    sentence = markov_generate_text(base_text)
-    print(sentence)
+    #sentence = markov_generate_text(base_text)
+    #print(sentence)
 
-    #for i in range(50): 
-    #    sentence = markov_generate_text(base_text)
-    #    print(sentence)
+    for i in range(50): 
+        sentence = markov_generate_text(base_text)
+        print(sentence)
 
 if __name__ == "__main__":
     main()
+
