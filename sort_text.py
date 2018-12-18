@@ -13,9 +13,10 @@ text = [line.strip() for line in text_data]
 
 for line in text:
     name = line[:line.find("「")]
-    file_path = './text_data/' + name + '.txt'
+    file_path = './text_data/ALL.txt'#'./text_data/' + name + '.txt'
 
-    text_line = line[line.find("「") + 1:line.find("」")] + '\n'
+    text_line_base = line[line.find("「") + 1:line.find("」")] + '\n'
+    text_line = text_line_base + 'EOF'
 
     if os.path.exists(file_path):
         write = open(file_path, "a")
