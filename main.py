@@ -10,6 +10,20 @@ def text_wakati(text):
 
     return result
 
+def first_word_check(first_word):
+    filter="名詞"
+    check = 0
+    mecab = MeCab.Tagger('mecabrc')
+    node = mecab.parseToNode(first_word)
+
+    if node.feature.startswith(filter):
+        print('名詞')
+        check = 1
+    else:
+        print('NO')
+
+    return check
+
 def load_file(filepath):
     text_data = ""
     for path in iglob(filepath):
@@ -25,7 +39,7 @@ def markov_generate_text(txt):
     w2 = ""
     generate_text = ""
 
-#辞書作成
+    #辞書作成
     for word in txt:
         if w1 and w2:
             if (w1, w2) not in markov:
@@ -35,28 +49,38 @@ def markov_generate_text(txt):
 
     w1, w2  = random.choice(list(markov.keys()))
 
-#文章の生成
+    #文章の生成
     while count < len(txt):
         tmp = random.choice(markov[(w1, w2)])
-        #if count == 0:
-        #    if '！' in tmp:
-        #        print("test！")
-        #        continue
-        #    elif '？' in tmp:
-        #        print("test？")
-        #        continue
-        #    elif '!' in tmp:
-        #        print("test!")
-        #        continue
-        #    elif '?' in tmp:
-        #        print("test?")
-        #        continue
-        #    elif '。' in tmp:
-        #        print("test。")
-        #        continue
-        #    elif '、' in tmp:
-        #        print("test、")
-        #        continue
+        if count == 0:
+            check = first_word_check(tmp)
+            if check == 0:
+                continue
+
+            #if '！' in tmp:
+            #    print("test！")
+            #    continue
+
+            #elif '？' in tmp:
+            #    print("test？")
+            #    continue
+
+            #elif '!' in tmp:
+            #    print("test!")
+            #    continue
+
+            #elif '?' in tmp:
+            #    print("test?")
+            #    continue
+
+            #elif '。' in tmp:
+            #    print("test。")
+            #    continue
+
+            #elif '、' in tmp:
+            #    print("test、")
+            #    continue
+
         generate_text += tmp
         w1, w2 = w2, tmp
         #print(w1, w2, '=', w2, tmp)
