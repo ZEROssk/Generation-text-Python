@@ -5,7 +5,7 @@ import sys
 import re
 from glob import iglob
 
-text_file = "./text_data/person/asuka.txt"
+text_file = "./text_data/speech/asuka.txt"
 
 def read_file(filepath):
     text_data = ""
@@ -35,6 +35,7 @@ def extraction(filepath):
             for item in items
             if (item[0] not in ('EOS', '', 't', 'ー') and
                 item[1] == '名詞' and item[2] == '一般')]
+    print(words)
 
     return words
 
@@ -43,7 +44,6 @@ def markov_generate_text(txt):
     count = 0
     w1 = ""
     w2 = ""
-    tmp = ""
     generate_text = ""
 
     #辞書作成
@@ -57,7 +57,7 @@ def markov_generate_text(txt):
     w1, w2  = random.choice(list(markov.keys()))
 
     #文章の生成
-    tmp = random.choice(extraction(text_file))
+    #tmp = random.choice(extraction(text_file))
 
     while count < 10:#len(txt):
         tmp = random.choice(markov[(w1, w2)])
@@ -78,8 +78,8 @@ def markov_generate_text(txt):
     return generate_text
 
 def main():
-    base_text = read_file(text_file)
-    base_text = text_wakati(base_text)
+    load_text = read_file(text_file)
+    base_text = text_wakati(load_text)
 
     sentence = markov_generate_text(base_text)
     print(sentence)
