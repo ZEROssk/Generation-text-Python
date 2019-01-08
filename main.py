@@ -21,6 +21,7 @@ def first_word_check(first_word):
         check = 1
     else:
         print('NO')
+        check = 0
 
     return check
 
@@ -50,11 +51,16 @@ def markov_generate_text(txt):
     w1, w2  = random.choice(list(markov.keys()))
 
     #文章の生成
-    while count < len(txt):
+    while count < 10:#len(txt):
         tmp = random.choice(markov[(w1, w2)])
+        print(count)
+        print(w1, w2, tmp)
         if count == 0:
             check = first_word_check(tmp)
+            print(check)
             if check == 0:
+                w1, w2 = w2, tmp
+                print('continue')
                 continue
 
             #if '！' in tmp:
@@ -83,7 +89,7 @@ def markov_generate_text(txt):
 
         generate_text += tmp
         w1, w2 = w2, tmp
-        #print(w1, w2, '=', w2, tmp)
+        print(w1, w2, '=', w2, tmp)
         count += 1
         if '！' in tmp:
             break
@@ -99,16 +105,17 @@ def markov_generate_text(txt):
     return generate_text
 
 def main():
-    base_text = load_file('./text_data/asuka.txt')
+    base_text = load_file('./text_data/ALL.txt')
+    #base_text = load_file('./text_data/asuka.txt')
 
     base_text = text_wakati(base_text)
 
-    #sentence = markov_generate_text(base_text)
-    #print(sentence)
+    sentence = markov_generate_text(base_text)
+    print(sentence)
 
-    for i in range(50): 
-        sentence = markov_generate_text(base_text)
-        print(sentence)
+    #for i in range(50): 
+    #    sentence = markov_generate_text(base_text)
+    #    print(sentence)
 
 if __name__ == "__main__":
     main()
