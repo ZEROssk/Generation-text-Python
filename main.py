@@ -1,7 +1,19 @@
 # -*- coding:utf-8 -*-
 import random
 import MeCab
+import sys
+import re
 from glob import iglob
+
+text_file = "./text_data/person/asuka.txt"
+
+def read_file(filepath):
+    text_data = ""
+    for path in iglob(filepath):
+        with open(path, 'r') as f:
+            text_data += f.read().strip()
+
+    return text_data
 
 def text_wakati(text):
     t = MeCab.Tagger('-Owakati')
@@ -10,34 +22,28 @@ def text_wakati(text):
 
     return result
 
-def first_word_check(first_word):
-    filter="名詞"
-    check = 0
-    mecab = MeCab.Tagger('mecabrc')
-    node = mecab.parseToNode(first_word)
+def extraction(filepath):
+    with open(filepath) as f:
+        data = f.read()
 
-    if node.feature.startswith(filter):
-        print('名詞')
-        check = 1
-    else:
-        print('NO')
-        check = 0
+    mecab = MeCab.Tagger()
+    parse = mecab.parse(data)
+    lines = parse.split("\n")
+    items = (re.split("[\t,]", line) for line in lines)
 
-    return check
+    words = [item[0]
+            for item in items
+            if (item[0] not in ('EOS', '', 't', 'ー') and
+                item[1] == '名詞' and item[2] == '一般')]
 
-def load_file(filepath):
-    text_data = ""
-    for path in iglob(filepath):
-        with open(path, 'r') as f:
-            text_data += f.read().strip()
-
-    return text_data
+    return words
 
 def markov_generate_text(txt):
     markov = {}
     count = 0
     w1 = ""
     w2 = ""
+    tmp = ""
     generate_text = ""
 
     #辞書作成
@@ -51,45 +57,12 @@ def markov_generate_text(txt):
     w1, w2  = random.choice(list(markov.keys()))
 
     #文章の生成
+    tmp = random.choice(extraction(text_file))
+
     while count < 10:#len(txt):
         tmp = random.choice(markov[(w1, w2)])
-        print(count)
-        print(w1, w2, tmp)
-        if count == 0:
-            check = first_word_check(tmp)
-            print(check)
-            if check == 0:
-                w1, w2 = w2, tmp
-                print('continue')
-                continue
-
-            #if '！' in tmp:
-            #    print("test！")
-            #    continue
-
-            #elif '？' in tmp:
-            #    print("test？")
-            #    continue
-
-            #elif '!' in tmp:
-            #    print("test!")
-            #    continue
-
-            #elif '?' in tmp:
-            #    print("test?")
-            #    continue
-
-            #elif '。' in tmp:
-            #    print("test。")
-            #    continue
-
-            #elif '、' in tmp:
-            #    print("test、")
-            #    continue
-
         generate_text += tmp
         w1, w2 = w2, tmp
-        print(w1, w2, '=', w2, tmp)
         count += 1
         if '！' in tmp:
             break
@@ -105,9 +78,7 @@ def markov_generate_text(txt):
     return generate_text
 
 def main():
-    base_text = load_file('./text_data/ALL.txt')
-    #base_text = load_file('./text_data/asuka.txt')
-
+    base_text = read_file(text_file)
     base_text = text_wakati(base_text)
 
     sentence = markov_generate_text(base_text)
