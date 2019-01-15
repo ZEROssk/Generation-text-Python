@@ -22,7 +22,7 @@ def text_wakati(text):
 
     return result
 
-def extraction(filepath):
+def meisi_dictionary(filepath):
     with open(filepath) as f:
         data = f.read()
 
@@ -35,35 +35,37 @@ def extraction(filepath):
             for item in items
             if (item[0] not in ('EOS', '', 't', 'ー') and
                 item[1] == '名詞' and item[2] == '一般')]
-    print(words)
 
-    return words
+    first_word = random.choice(words)
 
-def markov_generate_text(txt):
+    return first_word
+
+def main_dictionary(a_txt):
     markov = {}
-    count = 0
     w1 = ""
     w2 = ""
-    generate_text = ""
 
-    #辞書作成
-    for word in txt:
+    for word in a_txt:
         if w1 and w2:
             if (w1, w2) not in markov:
                 markov[(w1, w2)] = []
             markov[(w1, w2)].append(word)
         w1, w2 = w2, word
 
-    w1, w2  = random.choice(list(markov.keys()))
+    return markov
 
-    #文章の生成
-    #tmp = random.choice(extraction(text_file))
+def markov_generate_text(markov):
+    generate_text = ""
+    w1 = ""
+    w2 = ""
+    count = 0
 
-    while count < 10:#len(txt):
+    w1, w2 = random.choice(list(markov.keys()))
+    while count < len(markov):
         tmp = random.choice(markov[(w1, w2)])
         generate_text += tmp
         w1, w2 = w2, tmp
-        count += 1
+
         if '！' in tmp:
             break
         elif '？' in tmp:
@@ -75,13 +77,16 @@ def markov_generate_text(txt):
         elif '。' in tmp:
             break
 
+        count += 1
+
     return generate_text
 
 def main():
     load_text = read_file(text_file)
     base_text = text_wakati(load_text)
+    dictionary = main_dictionary(base_text)
 
-    sentence = markov_generate_text(base_text)
+    sentence = markov_generate_text(dictionary)
     print(sentence)
 
     #for i in range(50): 
