@@ -22,8 +22,8 @@ def text_wakati(text):
 
     return result
 
-def meisi_dictionary(filepath):
-    with open(filepath) as f:
+def first_word_dictionary(file_path):
+    with open(file_path) as f:
         data = f.read()
 
     mecab = MeCab.Tagger()
@@ -36,16 +36,18 @@ def meisi_dictionary(filepath):
             if (item[0] not in ('EOS', '', 't', 'ー') and
                 item[1] == '名詞' and item[2] == '一般')]
 
+    print(words)
+
     first_word = random.choice(words)
 
     return first_word
 
-def main_dictionary(a_txt):
+def main_dictionary(txt):
     markov = {}
     w1 = ""
     w2 = ""
 
-    for word in a_txt:
+    for word in txt:
         if w1 and w2:
             if (w1, w2) not in markov:
                 markov[(w1, w2)] = []
@@ -82,9 +84,10 @@ def markov_generate_text(markov):
     return generate_text
 
 def main():
-    load_text = read_file(text_file)
-    base_text = text_wakati(load_text)
+    read_text = read_file(text_file)
+    base_text = text_wakati(read_text)
     dictionary = main_dictionary(base_text)
+    test = first_word_dictionary(text_file)
 
     sentence = markov_generate_text(dictionary)
     print(sentence)
