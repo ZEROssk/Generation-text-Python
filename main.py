@@ -1,10 +1,6 @@
 # -*- coding:utf-8 -*-
 import random
 import MeCab
-import sys
-import re
-from glob import iglob
-import inspect
 
 text_file_path = "./text_data/speech/asuka.txt"
 #text_file = "./text_data/speech/ALL.txt"
@@ -37,41 +33,10 @@ def markov_generate_text(markov):
 
     while True:
         w1, w2  = random.choice(list(markov.keys()))
-        if '！' in w1:
+        if '！' in w1 or '？' in w1 or '!' in w1 or '?' in w1 or '。' in w1 or '、' in w1 or '・' in w1:
             print('skip ',w1,w2)
             continue
-        elif '？' in w1:
-            print('skip ',w1,w2)
-            continue
-        elif '!' in w1:
-            print('skip ',w1,w2)
-            continue
-        elif '?' in w1:
-            print('skip ',w1,w2)
-            continue
-        elif '。' in w1:
-            print('skip ',w1,w2)
-            continue
-        elif '、' in w1:
-            print('skip ',w1,w2)
-            continue
-        elif '・' in w1:
-            print('skip ',w1,w2)
-            continue
-
-        elif '！' in w2:
-            print('skip ',w1,w2)
-            continue
-        elif '？' in w2:
-            print('skip ',w1,w2)
-            continue
-        elif '!' in w2:
-            print('skip ',w1,w2)
-            continue
-        elif '?' in w2:
-            print('skip ',w1,w2)
-            continue
-        elif '。' in w2:
+        elif '！' in w2 or '？' in w2 or '!' in w2 or '?' in w2 or '。' in w2:
             print('skip ',w1,w2)
             continue
         else:
@@ -80,20 +45,16 @@ def markov_generate_text(markov):
             print('generate ',generate_text)
             break
 
-    while count < len(markov):
-        tmp = random.choice(markov[(w1, w2)])
+    while True:#count < len(markov):
+        try:
+            tmp = random.choice(markov[(w1, w2)])
+        except KeyError:
+            print('KeyError')
+            break
         generate_text += tmp
         w1, w2 = w2, tmp
 
-        if '！' in tmp:
-            break
-        elif '？' in tmp:
-            break
-        elif '!' in tmp:
-            break
-        elif '?' in tmp:
-            break
-        elif '。' in tmp:
+        if '！' in tmp or '!' in tmp or '？' in tmp or '?' in tmp or '。' in tmp:
             break
 
     return generate_text
@@ -101,12 +62,12 @@ def markov_generate_text(markov):
 def main():
     dic_text = dic(text_file_path)
 
-    sentence = markov_generate_text(dic_text)
-    print(sentence)
+    #sentence = markov_generate_text(dic_text)
+    #print(sentence)
 
-    #for num in range(1000000):
-    #    sentence = markov_generate_text(dictionary)
-    #    print(num,sentence)
+    for num in range(1000):
+        sentence = markov_generate_text(dic_text)
+        print(num,sentence)
 
 if __name__ == "__main__":
     main()
