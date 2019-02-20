@@ -5,13 +5,27 @@ import re
 import sys
 import time
 import os
+import json
 
 #text_file_path = "./text_data/speech/asuka.txt"
 #text_file_path = "./text_data/speech/ALL.txt"
 
-def read_dictionary(path):
+def read_dictionary(data_name):
+    main_dic_path = data_name + '/' + data_name + '_main.txt'
+    noun_dic_path = data_name + '/' + data_name + '_noun.txt'
 
-    return save_dic
+    with open(main_dic_path) as f:
+        rmd = f.read()
+        str_rmd = json.dumps(rmd)
+        read_main_dic = json.loads(str_rmd)
+        print(type(read_main_dic))
+
+    with open(noun_dic_path) as f:
+        rnd = f.read()
+        read_noun_dic = list(rnd)
+        print(type(read_noun_dic))
+
+    return read_main_dic, read_noun_dic
 
 def make_dictionary(file_path, data_name):
     lines_data = open(file_path, "r").readlines()
@@ -61,9 +75,11 @@ def make_dictionary(file_path, data_name):
 
     with open(main_dic_path, 'a') as f:
         f.write(str(main_dic))
+        print(type(main_dic))
 
     with open(noun_dic_path, 'a') as f:
         f.write(str(noun_dic))
+        print(type(noun_dic))
 
     return main_dic, noun_dic
 
@@ -96,8 +112,8 @@ def main():
     if os.path.exists(data_set_name):
         dic = read_dictionary(data_set_name)
         print('read data')
-        #sentence = markov_generate_text(dic)
-        #print(sentence)
+        sentence = markov_generate_text(dic)
+        print(sentence)
     else:
         os.mkdir(data_set_name)
         print('mkdir')
