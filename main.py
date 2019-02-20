@@ -4,12 +4,19 @@ import MeCab
 import re
 import sys
 import time
+import os
 
 #text_file_path = "./text_data/speech/asuka.txt"
-text_file_path = "./text_data/speech/ALL.txt"
+#text_file_path = "./text_data/speech/ALL.txt"
 
-def dictionary(file_path):
+def read_dictionary(path):
+
+    return save_dic
+
+def make_dictionary(file_path, data_name):
     lines_data = open(file_path, "r").readlines()
+    main_dic_path = data_name + '/' + data_name + '_main.txt'
+    noun_dic_path = data_name + '/' + data_name + '_noun.txt'
     main_dic = {}
     noun_dic = []
 
@@ -30,29 +37,35 @@ def dictionary(file_path):
             w1, w2 = w2, word
 
         #create noun dictionary
-        #mecab_noun = (re.split(
-        #                '[\t,]',line
-        #                ) for line in (
-        #                    MeCab.Tagger().parse(line).split('\n')))
-        #noun_list = list(mecab_noun)
+        mecab_noun = (re.split(
+                        '[\t,]',line
+                        ) for line in (
+                            MeCab.Tagger().parse(line).split('\n')))
+        noun_list = list(mecab_noun)
 
-        #for i1,i2 in zip(noun_list,noun_list[1:2]):
-        #    if i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == 'サ変接続':
-        #        noun_dic.append((i1[0], i2[0]))
-        #    elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == 'ナイ形容詞語幹':
-        #        noun_dic.append((i1[0], i2[0]))
-        #    elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '一般':
-        #        noun_dic.append((i1[0], i2[0]))
-        #    elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '形容動詞語幹':
-        #        noun_dic.append((i1[0], i2[0]))
-        #    elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '固有名詞':
-        #        noun_dic.append((i1[0], i2[0]))
-        #    elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '代名詞':
-        #        noun_dic.append((i1[0], i2[0]))
-        #    elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '副詞可能':
-        #        noun_dic.append((i1[0], i2[0]))
+        for i1,i2 in zip(noun_list,noun_list[1:2]):
+            if i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == 'サ変接続':
+                noun_dic.append((i1[0], i2[0]))
+            elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == 'ナイ形容詞語幹':
+                noun_dic.append((i1[0], i2[0]))
+            elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '一般':
+                noun_dic.append((i1[0], i2[0]))
+            elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '形容動詞語幹':
+                noun_dic.append((i1[0], i2[0]))
+            elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '固有名詞':
+                noun_dic.append((i1[0], i2[0]))
+            elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '代名詞':
+                noun_dic.append((i1[0], i2[0]))
+            elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '副詞可能':
+                noun_dic.append((i1[0], i2[0]))
 
-    return main_dic#, noun_dic
+    with open(main_dic_path, 'a') as f:
+        f.write(str(main_dic))
+
+    with open(noun_dic_path, 'a') as f:
+        f.write(str(noun_dic))
+
+    return main_dic, noun_dic
 
 def markov_generate_text(dictionaries):
     generate_text = ""
@@ -60,14 +73,13 @@ def markov_generate_text(dictionaries):
     w2 = ""
 
     #select first word set
-    #w1, w2  = random.choice(dictionaries[1])
-    w1, w2  = random.choice(list(dictionaries.keys()))
+    w1, w2  = random.choice(dictionaries[1])
     generate_text += w1
     generate_text += w2
 
     while True:
         try:
-            tmp = random.choice(dictionaries[(w1, w2)])
+            tmp = random.choice(dictionaries[0][(w1, w2)])
         except KeyError:
             print('KeyError')
             break
@@ -80,13 +92,24 @@ def markov_generate_text(dictionaries):
     return generate_text
 
 def main():
-    dic= dictionary(text_file_path)
-    #sentence = markov_generate_text(dic)
-    #print(sentence)
-
-    for num in range(100):
+    data_set_name = input('Pleas directory name: ')
+    if os.path.exists(data_set_name):
+        dic = read_dictionary(data_set_name)
+        print('read data')
+        #sentence = markov_generate_text(dic)
+        #print(sentence)
+    else:
+        os.mkdir(data_set_name)
+        print('mkdir')
+        text_file_path = input('Pleas txt file path: ')
+        print('input txt file path')
+        dic = make_dictionary(text_file_path, data_set_name)
         sentence = markov_generate_text(dic)
-        print(num,sentence)
+        print(sentence)
+
+    #for num in range(100):
+    #    sentence = markov_generate_text(dic)
+    #    print(num,sentence)
 
 if __name__ == "__main__":
     start = time.time()
