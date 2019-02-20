@@ -3,6 +3,7 @@ import random
 import MeCab
 import re
 import sys
+import time
 
 #text_file_path = "./text_data/speech/asuka.txt"
 text_file_path = "./text_data/speech/ALL.txt"
@@ -29,29 +30,29 @@ def dictionary(file_path):
             w1, w2 = w2, word
 
         #create noun dictionary
-        mecab_noun = (re.split(
-                        '[\t,]',line
-                        ) for line in (
-                            MeCab.Tagger().parse(line).split('\n')))
-        noun_list = list(mecab_noun)
+        #mecab_noun = (re.split(
+        #                '[\t,]',line
+        #                ) for line in (
+        #                    MeCab.Tagger().parse(line).split('\n')))
+        #noun_list = list(mecab_noun)
 
-        for i1,i2 in zip(noun_list,noun_list[1:2]):
-            if i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == 'サ変接続':
-                noun_dic.append((i1[0], i2[0]))
-            elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == 'ナイ形容詞語幹':
-                noun_dic.append((i1[0], i2[0]))
-            elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '一般':
-                noun_dic.append((i1[0], i2[0]))
-            elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '形容動詞語幹':
-                noun_dic.append((i1[0], i2[0]))
-            elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '固有名詞':
-                noun_dic.append((i1[0], i2[0]))
-            elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '代名詞':
-                noun_dic.append((i1[0], i2[0]))
-            elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '副詞可能':
-                noun_dic.append((i1[0], i2[0]))
+        #for i1,i2 in zip(noun_list,noun_list[1:2]):
+        #    if i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == 'サ変接続':
+        #        noun_dic.append((i1[0], i2[0]))
+        #    elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == 'ナイ形容詞語幹':
+        #        noun_dic.append((i1[0], i2[0]))
+        #    elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '一般':
+        #        noun_dic.append((i1[0], i2[0]))
+        #    elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '形容動詞語幹':
+        #        noun_dic.append((i1[0], i2[0]))
+        #    elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '固有名詞':
+        #        noun_dic.append((i1[0], i2[0]))
+        #    elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '代名詞':
+        #        noun_dic.append((i1[0], i2[0]))
+        #    elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '副詞可能':
+        #        noun_dic.append((i1[0], i2[0]))
 
-    return main_dic, noun_dic
+    return main_dic#, noun_dic
 
 def markov_generate_text(dictionaries):
     generate_text = ""
@@ -59,14 +60,14 @@ def markov_generate_text(dictionaries):
     w2 = ""
 
     #select first word set
-    w1, w2  = random.choice(dictionaries[1])
+    #w1, w2  = random.choice(dictionaries[1])
+    w1, w2  = random.choice(list(dictionaries.keys()))
     generate_text += w1
     generate_text += w2
-    print(w1,w2)
 
     while True:
         try:
-            tmp = random.choice(dictionaries[0][(w1, w2)])
+            tmp = random.choice(dictionaries[(w1, w2)])
         except KeyError:
             print('KeyError')
             break
@@ -88,5 +89,8 @@ def main():
         print(num,sentence)
 
 if __name__ == "__main__":
+    start = time.time()
     main()
+    elapsed_time= time.time() - start
+    print('elapsed_time:{0}'.format(elapsed_time) + '[sec]')
 
