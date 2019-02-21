@@ -5,7 +5,7 @@ import re
 import sys
 import time
 import os
-import json
+import pickle
 
 #text_file_path = "./text_data/speech/asuka.txt"
 #text_file_path = "./text_data/speech/ALL.txt"
@@ -73,13 +73,11 @@ def make_dictionary(file_path, data_name):
             elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '副詞可能':
                 noun_dic.append((i1[0], i2[0]))
 
-    with open(main_dic_path, 'a') as f:
+    with open(main_dic_path, 'w') as f:
         f.write(str(main_dic))
-        print(type(main_dic))
 
     with open(noun_dic_path, 'a') as f:
         f.write(str(noun_dic))
-        print(type(noun_dic))
 
     return main_dic, noun_dic
 
