@@ -5,7 +5,7 @@ import re
 import sys
 import time
 import os
-import pickle
+import ast
 
 #text_file_path = "./text_data/speech/asuka.txt"
 #text_file_path = "./text_data/speech/ALL.txt"
@@ -16,13 +16,12 @@ def read_dictionary(data_name):
 
     with open(main_dic_path) as f:
         rmd = f.read()
-        str_rmd = json.dumps(rmd)
-        read_main_dic = json.loads(str_rmd)
+        read_main_dic = ast.literal_eval(rmd)
         print(type(read_main_dic))
 
     with open(noun_dic_path) as f:
         rnd = f.read()
-        read_noun_dic = list(rnd)
+        read_noun_dic = rnd#list(rnd)
         print(type(read_noun_dic))
 
     return read_main_dic, read_noun_dic
@@ -87,7 +86,8 @@ def markov_generate_text(dictionaries):
     w2 = ""
 
     #select first word set
-    w1, w2  = random.choice(dictionaries[1])
+    w1,w2  = random.choice(list(dictionaries[1]))
+    print(w1,w2)
     generate_text += w1
     generate_text += w2
 
