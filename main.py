@@ -5,6 +5,7 @@ import re
 import sys
 import time
 import os
+import json
 import ast
 
 #text_file_path = "./text_data/speech/asuka.txt"
@@ -15,21 +16,37 @@ def read_dictionary(data_name):
     noun_dic_path = data_name + '/' + data_name + '_noun.txt'
 
     with open(main_dic_path) as f:
-        rmd = f.read()
-        read_main_dic = ast.literal_eval(rmd)
+        read_main_dic = json.load(f)
+        #rmd = f.read()
+        #read_main_dic = ast.literal_eval(rmd)
         print(type(read_main_dic))
 
     with open(noun_dic_path) as f:
         rnd = f.read()
-        read_noun_dic = rnd#list(rnd)
+        read_noun_dic = rnd.split(',')
+        #print(read_noun_dic)
         print(type(read_noun_dic))
 
     return read_main_dic, read_noun_dic
 
+def write_dictionary_data(data_name, name):
+    main_dic_path = name + '/' + name + '_main.json'
+    noun_dic_path = name + '/' + name + '_noun.txt'
+
+    with open(main_dic_path, 'w') as f:
+        t = str(data_name[0])
+        test = {"test":t}
+        print(test)
+        json.dump(test, f, indent=4)
+        #f.write(str(main_dic))
+
+    with open(noun_dic_path, 'w') as f:
+        f.write(str(data_name[1]))
+
+    return write_main_dic, write_noun_dic
+
 def make_dictionary(file_path, data_name):
     lines_data = open(file_path, "r").readlines()
-    main_dic_path = data_name + '/' + data_name + '_main.txt'
-    noun_dic_path = data_name + '/' + data_name + '_noun.txt'
     main_dic = {}
     noun_dic = []
 
@@ -72,12 +89,6 @@ def make_dictionary(file_path, data_name):
             elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '副詞可能':
                 noun_dic.append((i1[0], i2[0]))
 
-    with open(main_dic_path, 'w') as f:
-        f.write(str(main_dic))
-
-    with open(noun_dic_path, 'a') as f:
-        f.write(str(noun_dic))
-
     return main_dic, noun_dic
 
 def markov_generate_text(dictionaries):
@@ -86,7 +97,7 @@ def markov_generate_text(dictionaries):
     w2 = ""
 
     #select first word set
-    w1,w2  = random.choice(list(dictionaries[1]))
+    w1, w2  = random.choice(dictionaries[1])
     print(w1,w2)
     generate_text += w1
     generate_text += w2
@@ -109,17 +120,16 @@ def main():
     data_set_name = input('Pleas directory name: ')
     if os.path.exists(data_set_name):
         dic = read_dictionary(data_set_name)
-        print('read data')
-        sentence = markov_generate_text(dic)
-        print(sentence)
+        #print('read data')
+        #sentence = markov_generate_text(dic)
+        #print(sentence)
     else:
         os.mkdir(data_set_name)
-        print('mkdir')
         text_file_path = input('Pleas txt file path: ')
-        print('input txt file path')
         dic = make_dictionary(text_file_path, data_set_name)
-        sentence = markov_generate_text(dic)
-        print(sentence)
+        write_dic = write_dictionary_data(dic, data_set_name)
+        #sentence = markov_generate_text(dic)
+        #print(sentence)
 
     #for num in range(100):
     #    sentence = markov_generate_text(dic)
