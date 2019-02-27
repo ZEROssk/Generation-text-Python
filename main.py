@@ -6,7 +6,7 @@ import sys
 import time
 import os
 import json
-import ast
+import pickle
 
 data_set_name = input('Pleas directory name: ')
 main_dic_path = data_set_name + '/' + data_set_name + '_main.json'
@@ -16,28 +16,24 @@ noun_dic_path = data_set_name + '/' + data_set_name + '_noun.txt'
 
 def read_dictionary():
     with open(main_dic_path) as f:
-        read_main_dic = json.load(f)
-        #rmd = f.read()
-        #read_main_dic = ast.literal_eval(rmd)
-        print(type(read_main_dic))
+        rmd = json.load(f)
+        read_main_dic = rmd['test']
 
     with open(noun_dic_path) as f:
         rnd = f.read()
         read_noun_dic = rnd.split(',')
-        #print(read_noun_dic)
         print(type(read_noun_dic))
 
     return read_main_dic, read_noun_dic
 
 def write_dictionary_data(data_name):
     with open(main_dic_path, 'w') as f:
-        t = str(data_name[0])
-        test = {"test":t}
-        json.dump(test, f, indent=4)
-        #f.write(str(main_dic))
+        write_main_dic = {"test":str(data_name[0])}
+        json.dump(write_main_dic, f, indent=4)
 
     with open(noun_dic_path, 'w') as f:
-        f.write(str(data_name[1]))
+        write_noun_dic = data_name[1]
+        f.write(str(write_noun_dic))
 
     return write_main_dic, write_noun_dic
 
@@ -115,16 +111,15 @@ def markov_generate_text(dictionaries):
 def main():
     if os.path.exists(data_set_name):
         dic = read_dictionary()
-        #print('read data')
-        #sentence = markov_generate_text(dic)
-        #print(sentence)
+        sentence = markov_generate_text(dic)
+        print(sentence)
     else:
         os.mkdir(data_set_name)
         text_file_path = input('Pleas txt file path: ')
         dic = make_dictionary(text_file_path)
         write_dic = write_dictionary_data(dic)
-        #sentence = markov_generate_text(dic)
-        #print(sentence)
+        sentence = markov_generate_text(dic)
+        print(sentence)
 
     #for num in range(100):
     #    sentence = markov_generate_text(dic)
