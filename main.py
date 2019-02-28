@@ -6,23 +6,26 @@ import sys
 import time
 import os
 import json
-import pickle
+import csv
+import ast
 
 data_set_name = input('Pleas directory name: ')
 main_dic_path = data_set_name + '/' + data_set_name + '_main.json'
-noun_dic_path = data_set_name + '/' + data_set_name + '_noun.txt'
+noun_dic_path = data_set_name + '/' + data_set_name + '_noun.csv'
 #text_file_path = "./text_data/speech/asuka.txt"
 #text_file_path = "./text_data/speech/ALL.txt"
 
 def read_dictionary():
     with open(main_dic_path) as f:
         rmd = json.load(f)
-        read_main_dic = rmd['test']
+        read_main_dic = ast.literal_eval(rmd['test'])
+        print(type(read_main_dic))
 
     with open(noun_dic_path) as f:
-        rnd = f.read()
-        read_noun_dic = rnd.split(',')
-        print(type(read_noun_dic))
+        read_noun_dic = []
+        rnd = csv.reader(f)
+        for r in rnd:
+            read_noun_dic.append((r[0], r[1]))
 
     return read_main_dic, read_noun_dic
 
@@ -32,8 +35,10 @@ def write_dictionary_data(data_name):
         json.dump(write_main_dic, f, indent=4)
 
     with open(noun_dic_path, 'w') as f:
-        write_noun_dic = data_name[1]
-        f.write(str(write_noun_dic))
+        writer = csv.writer(f, lineterminator = '\n')
+        for wnd in data_name[1]:
+            write_noun_dic = list(wnd)
+            writer.writerow(write_noun_dic)
 
     return write_main_dic, write_noun_dic
 
@@ -111,8 +116,9 @@ def markov_generate_text(dictionaries):
 def main():
     if os.path.exists(data_set_name):
         dic = read_dictionary()
-        sentence = markov_generate_text(dic)
-        print(sentence)
+        for num in range(100):
+            sentence = markov_generate_text(dic)
+            print(num,sentence)
     else:
         os.mkdir(data_set_name)
         text_file_path = input('Pleas txt file path: ')
@@ -120,10 +126,6 @@ def main():
         write_dic = write_dictionary_data(dic)
         sentence = markov_generate_text(dic)
         print(sentence)
-
-    #for num in range(100):
-    #    sentence = markov_generate_text(dic)
-    #    print(num,sentence)
 
 if __name__ == "__main__":
     start = time.time()
