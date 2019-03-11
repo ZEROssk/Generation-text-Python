@@ -12,8 +12,8 @@ import ast
 data_set_name = input('Pleas directory name: ')
 main_dic_path = data_set_name + '/' + data_set_name + '_main.json'
 noun_dic_path = data_set_name + '/' + data_set_name + '_noun.csv'
-#text_file_path = "./text_data/speech/asuka.txt"
-#text_file_path = "./text_data/speech/ALL.txt"
+#text_file_path = "./text_data/eva/asuka.txt"
+#text_file_path = "./text_data/eva/ALL.txt"
 
 def read_dictionary():
     with open(main_dic_path) as f:
