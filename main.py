@@ -86,6 +86,7 @@ def make_dictionary(file_path):
             elif i1[0] not in 'EOS' and i1[1] == '名詞' and i1[2] == '副詞可能':
                 noun_dic.append((i1[0], i2[0]))
 
+    print(main_dic)
     return main_dic, noun_dic
 
 def markov_generate_text(dictionaries):
